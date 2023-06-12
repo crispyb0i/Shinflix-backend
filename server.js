@@ -1,16 +1,16 @@
-const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const dotenv = require("dotenv");
 const express = require("express");
 const mongoose = require("mongoose");
 const passport = require("passport");
-// const passportLocalMongoose = require("passport-local-mongoose");
 const session = require("express-session");
 const Blog = require("./model/Blog");
 const User = require("./model/User");
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
+dotenv.config();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(
@@ -24,8 +24,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-const uri =
-	"mongodb+srv://admin-david:kuIfVtPcn2rx4cPg@cluster0.zaht1.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER_NAME}.zaht1.mongodb.net/?retryWrites=true&w=majority`;
 
 // mongoose.set("useCreateIndex", true);
 mongoose.connect(uri, {
@@ -72,7 +71,6 @@ app.get("/secret", (req, res) => {
 app.post("/login", (req, res) => {});
 
 app.post("/register", async (req, res) => {
-	console.log(req.body);
 	const { username, password } = req.body;
 	const newUser = new User({ username: username });
 	console.log("new user", newUser);
